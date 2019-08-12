@@ -1,0 +1,82 @@
+defaults: &defaults
+  working_directory: ~/rdt
+  docker:
+    - image: circleci/node:11.4.0
+jobs:
+  test-build:
+    <<: *defaults
+    steps:
+      # Checkout the code from the branch into the working_directory
+      - checkout
+      # Log the current branch
+      - run:
+          name: Show current branch
+          command: echo ${CIRCLE_BRANCH}
+      # Download and cache dependencies
+      - restore_cache:
+          name: Restore NPM Package Cache
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+      # Install project dependencies
+      - run:
+          name: Install Dependencies
+          command: npm install --frozen-lockfile
+      # Cache local dependencies if they don't exist
+      - save_cache:
+          name: Save NPM Package Cache
+          key: v1-dependencies-{{ checksum "package.json" }}
+          paths:
+            - ~/.cache/npm run
+      # Lint the server source code
+      - run:
+          name: Linting
+          command: npm run lint
+      # Run tests
+      # - run:
+      #     name: Test
+      #     command: npm run test
+      # Deploy documentation to git-pages
+      - persist_to_workspace:
+          root: ~/rdt
+          paths:
+            - .
+  docs-deploy:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/rdt
+      - add_ssh_keys
+      - run:
+          name: Add SSH Host
+          command: ssh-keyscan ${SSH_HOST} >> ~/.ssh/known_hosts
+      - run:
+          name: Buid docs
+          command: npm run build-storybook
+      - run:
+          name: Install dependencies
+          command: sudo npm install -g --silent gh-pages@2.0.1
+      - run:
+          name: Configure dependencies
+          command: git config --global user.name "${GH_NAME}" && git config --global user.email "${GH_EMAIL}"
+      - run:
+          name: Deploy docs to gh-pages branch
+          command: gh-pages -m 'auto commit [ci skip]' --dist storybook-static
+      - run:
+          name: Deploy docs success
+          command: echo "Successfully deployed docs"
+          when: on_success
+workflows:
+  version: 2
+  build:
+    jobs:
+      - test-build:
+          filters:
+            branches:
+              ignore:
+                - gh-pages
+      - docs-deploy:
+          requires:
+            - test-build
+          filters:
+            branches:
+              only: master
