@@ -1,0 +1,67 @@
+.pagination {
+	font-size: 14px;
+	vertical-align: middle;
+	width: 100%;
+
+	input {
+
+		&:focus{
+			box-shadow: none;
+			border-color: unset;
+		}
+	}
+
+	.search {
+		border: none;
+	}
+
+	.page-option {
+		width: auto;
+	}
+
+	.navigation {
+		width: auto;
+
+		.pages {
+			display: inline-block;
+
+			span {
+				padding: 3px;
+				margin: -3px 0px;
+				border-radius: 50px;
+				height: auto;
+				width: 27px;
+				display: inline-block;
+				text-align: center;
+				cursor: pointer;
+
+				// &.active {
+				// 	@include themify($themes) {
+				// 		color: themed("headerColor");
+				// 		background-color: themed("buttonSecondaryColor") !important;
+				// 	}
+				// }
+				// &:hover {
+				// 	@include themify($themes) {
+				// 		color: themed("headerColor");
+				// 	}
+				// }
+			}
+		}
+
+		.control {
+			cursor: pointer;
+
+			&.prev {
+				float: left;
+				margin-right: 10px;
+			}
+
+			&.next {
+				float: right;
+				margin-left: 10px;
+			}
+		}
+
+	}
+}

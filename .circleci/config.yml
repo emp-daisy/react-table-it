@@ -1,0 +1,67 @@
+defaults: &defaults
+  working_directory: ~/rdt
+  docker:
+    - image: circleci/node:11.4.0
+  environment:
+    - SOURCE_BRANCH: master
+    - TARGET_BRANCH: gh-pages
+jobs:
+  build:
+    <<: *defaults
+    steps:
+      # Checkout the code from the branch into the working_directory
+      - checkout
+      # Log the current branch
+      - run:
+          name: Show current branch
+          command: echo ${CIRCLE_BRANCH}
+      # Download and cache dependencies
+      - restore_cache:
+          name: Restore NPM Package Cache
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+      # Install project dependencies
+      - run:
+          name: Install Dependencies
+          command: npm run install --frozen-lockfile
+      # Cache local dependencies if they don't exist
+      - save_cache:
+          name: Save NPM Package Cache
+          key: v1-dependencies-{{ checksum "package.json" }}
+          paths:
+            - ~/.cache/npm run
+      # Lint the server source code
+      - run:
+          name: Linting
+          command: npm run lint
+      # Run tests
+      - run:
+          name: Test
+          command: npm run test
+      # Deploy documentation to git-pages
+      - deploy:
+          name: Deploy
+          command: |
+            if [ $CIRCLE_BRANCH == $SOURCE_BRANCH ]; then
+              git config --global user.email $GH_EMAIL
+              git config --global user.name $GH_NAME
+
+              git clone $CIRCLE_REPOSITORY_URL out
+
+              cd out
+              git checkout $TARGET_BRANCH || git checkout --orphan $TARGET_BRANCH
+              git rm -rf .
+              cd ..
+
+              npm run build
+
+              cp -a build/. out/.
+
+              mkdir -p out/.circleci && cp -a .circleci/. out/.circleci/.
+              cd out
+
+              git add -A
+              git commit -m "Automated deployment to GitHub Pages: ${CIRCLE_SHA1}" --allow-empty
+
+              git push origin $TARGET_BRANCH
+            fi
