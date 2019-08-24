@@ -32,9 +32,9 @@ jobs:
           name: Linting
           command: npm run lint
       # Run tests
-      # - run:
-      #     name: Test
-      #     command: npm run test
+      - run:
+          name: Test
+          command: npm run test
       # Deploy documentation to git-pages
       - persist_to_workspace:
           root: ~/rdt

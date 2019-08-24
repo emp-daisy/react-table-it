@@ -6,7 +6,9 @@
   "scripts": {
     "start": "webpack --watch",
     "build": "babel ./src --out-dir ./build -s inline",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage --colors",
     "lint": "eslint --fix . && echo 'Lint complete.'",
     "prepublishOnly": "rm -rf ./dist && npm run build",
     "storybook": "start-storybook -p 6006",
@@ -38,6 +40,7 @@
   "devDependencies": {
     "@babel/cli": "^7.1.5",
     "@babel/core": "^7.1.6",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
     "@babel/preset-env": "^7.1.6",
     "@babel/preset-react": "^7.0.0",
     "@fortawesome/fontawesome-free": "^5.10.1",
@@ -47,20 +50,27 @@
     "@storybook/addon-a11y": "^5.1.10",
     "@storybook/addon-actions": "^5.1.10",
     "@storybook/addon-info": "^5.1.11",
+    "@storybook/addon-knobs": "^5.1.11",
     "@storybook/addon-links": "^5.1.10",
     "@storybook/addon-storysource": "^5.1.10",
+    "@storybook/addon-viewport": "^5.1.11",
     "@storybook/addons": "^5.1.10",
     "@storybook/react": "^5.1.10",
     "babel-eslint": "^10.0.2",
+    "babel-jest": "^24.9.0",
     "babel-loader": "^8.0.6",
     "bootstrap": "^4.3.1",
+    "enzyme": "^3.10.0",
+    "enzyme-adapter-react-16": "^1.14.0",
     "eslint": "^6.1.0",
     "eslint-config-airbnb": "^17.1.1",
     "eslint-config-prettier": "^6.0.0",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-react": "^7.14.3",
+    "faker": "^4.1.0",
     "husky": "^3.0.2",
+    "jest": "^24.9.0",
     "lint-staged": "^9.2.1",
     "node-sass": "^4.12.0",
     "prettier": "^1.18.2",
@@ -69,6 +79,7 @@
     "react": "^16.x",
     "react-dom": "^16.6.3",
     "sass-loader": "^7.2.0",
+    "storybook-addon-smart-knobs": "^5.0.0",
     "webpack-cli": "^3.3.6"
   },
   "files": [
@@ -84,6 +95,23 @@
       "eslint",
       "pretty-quick — staged",
       "git add"
+    ]
+  },
+  "jest": {
+    "setupFilesAfterEnv": [
+      "<rootDir>/setup-test.js"
+    ],
+    "verbose": true,
+    "testMatch": [
+      "<rootDir>/src/**/*.spec.js"
+    ],
+    "collectCoverageFrom": [
+      "**/*.{js,jsx}",
+      "!**/node_modules/**",
+      "!**/coverage/**",
+      "!**/stories/**",
+      "!**/storybook-static/**",
+      "!**/setup-test.js"
     ]
   }
 }
