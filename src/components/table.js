@@ -10,11 +10,16 @@ class Table extends React.Component {
     super(props);
     this.state = {
       sortAscending: false,
+      stateData: [],
       filteredData: [],
       itemsLength: 0,
       sortKey: undefined,
     };
   }
+
+  componentDidMount = () => {
+    this.setItemLength();
+  };
 
   componentDidUpdate = prevProps => {
     const { data } = this.props;
@@ -28,72 +33,68 @@ class Table extends React.Component {
     const { server, dataLength, data } = this.props;
     this.setState({
       itemsLength: server ? dataLength : data.length,
+      stateData: data,
     });
   };
 
-  onPageChange = (offset, limit, search = '') => {
-    const { data, server, onPageChange } = this.props;
+  onPageChange = (offset, limit, search) => {
+    const { server, onPageChange } = this.props;
+    const { stateData: data } = this.state;
     let filteredData;
+    let searchData;
     if (server) {
       onPageChange(offset, limit, search);
-      filteredData = data;
+      filteredData = data.slice(0, limit);
     } else {
-      filteredData = [...data]
-        .filter(item =>
-          Object.values(item)
-            .join()
-            .toLowerCase()
-            .includes(search),
-        )
-        .slice(offset)
-        .slice(0, limit);
+      searchData = [...data].filter(item =>
+        Object.values(item)
+          .join()
+          .toLowerCase()
+          .includes(search),
+      );
+      filteredData = searchData.slice(offset).slice(0, limit);
     }
-    this.setState({ filteredData });
+    this.setState({ filteredData, ...(search && { itemsLength: searchData.length }) });
   };
 
   sortPage = key => {
-    const { sortAscending: sortOption, filteredData: filtered } = this.state;
+    const { sortAscending: sortOption } = this.state;
     const { onSort, data } = this.props;
     const sortAscending = !sortOption;
-    let filteredData = data;
+    let stateData = data;
     if (onSort) {
       onSort(key, sortAscending);
     } else {
-      filteredData = filtered.sort((a, b) =>
+      stateData = [...data].sort((a, b) =>
         sortAscending
           ? a[key].toString().localeCompare(b[key].toString())
           : b[key].toString().localeCompare(a[key].toString()),
       );
     }
-    this.setState({ filteredData, sortKey: key, sortAscending });
+    this.setState({ stateData, sortKey: key, sortAscending });
   };
 
-  sortIcon=  (selector)=>{
-    const {sortKey, sortAscending } = this.state;
+  sortIcon = selector => {
+    const { sortKey, sortAscending } = this.state;
     if (!sortKey || sortKey !== selector) {
       return faSort;
-    } if (sortAscending) {
+    }
+    if (sortAscending) {
       return faSortUp;
     }
-      return faSortDown;
-  }
+    return faSortDown;
+  };
 
   pagination = () => {
-    const {
-      data,
-      searchPlaceholder,
-      search,
-      pageOptions,
-      paginationComponent,
-    } = this.props;
-    const { itemsLength } = this.state;
+    const { searchPlaceholder, search, pageOptions, paginationComponent } = this.props;
+    const { itemsLength, stateData } = this.state;
     return (
       <PaginationBar
         onPageChange={this.onPageChange}
         itemsLength={itemsLength}
         searchPlaceholder={searchPlaceholder}
-        showSearch={!search}
-        data={data}
+        showSearch={search}
+        data={stateData}
         pageOptions={pageOptions}
         paginationComponent={paginationComponent}
       />
@@ -186,12 +187,12 @@ Table.propTypes = {
       class: PropTypes.string,
       selector: PropTypes.string,
       sortable: PropTypes.bool,
-      cell: PropTypes.func,
+      cell: PropTypes.oneOfType([PropTypes.func, PropTypes.element]),
     }),
-    ),
+  ),
   /** Specify length of all data when loading from server.
    * Note: server props must true
-  */
+   */
   dataLength: PropTypes.number,
   /** Position of pagination component. */
   paginationPosition: PropTypes.oneOf(['top', 'bottom', 'both', 'none']),
@@ -206,14 +207,14 @@ Table.propTypes = {
    *       ***    offset => offset for new page
    *       ***    limit => current limit of table
    *       ***    search => optional search term
-  */
+   */
   onPageChange: PropTypes.func,
   // SORTING
   /** Custom sort function.
    * params => (selector, direction)
    *       ***    selector => the column selector specified
    *       ***    direction => ascendingOrder === true
-  */
+   */
   onSort: PropTypes.func,
   /** Search box placehiolder */
   searchPlaceholder: PropTypes.string,
@@ -233,7 +234,7 @@ Table.propTypes = {
 
 Table.defaultProps = {
   // TABLE
-  emptyPlaceholder: 'No Data found',
+  emptyPlaceholder: 'No data found',
   dataLength: 0,
   columns: [],
   data: [],
@@ -242,12 +243,12 @@ Table.defaultProps = {
   server: false,
   paginationComponent: null,
   paginationPosition: 'top',
-  onPageChange: undefined,
+  onPageChange: () => {},
   // SORTING
   onSort: undefined,
   // SEARCH
   searchPlaceholder: 'Search',
-  search: false,
+  search: true,
   // STYLING
   containerClass: '',
   tableClass: '',

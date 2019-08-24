@@ -12,6 +12,11 @@
         "node": true,
         "es6": true
     },
+    "globals": {
+        "mount": true,
+        "render": true,
+        "shallow": true,
+    },
     "rules": {
         "max-len": ["error", {"code": 100}],
         "prefer-promise-reject-errors": ["off"],
