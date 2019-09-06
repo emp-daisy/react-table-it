@@ -1,20 +1,27 @@
 import React from 'react';
+import Pagination from 'react-js-pagination';
 import Table from './table';
-import fixtures, { ColumnsFixtures } from '../../fixtures/data';
+import { TableFixtures, ColumnsFixtures } from '../../fixtures/data';
 
-fdescribe('Table Component', () => {
-  it('renders correctly', () => {
+const fixtures = TableFixtures(20);
+describe('Table Component', () => {
+  it('should renders correctly', () => {
     const wrapper = shallow(<Table />);
     expect(wrapper).toMatchSnapshot();
   });
 
-  it('renders empty row', () => {
+  it('should renders empty row', () => {
     const wrapper = mount(<Table />);
     expect(wrapper.find('table td')).toHaveLength(1);
     expect(wrapper.find('table td').text()).toEqual('No data found');
     wrapper.setProps({ emptyPlaceholder: 'No product found!' });
     wrapper.update();
     expect(wrapper.find('table td').text()).toEqual('No product found!');
+  });
+
+  it('should get correct ficture size', () => {
+    expect(TableFixtures(10).length).toEqual(10);
+    expect(TableFixtures().length).toEqual(1);
   });
 
   it('renders data on table', () => {
@@ -70,6 +77,21 @@ fdescribe('Table Component', () => {
     wrapper.update();
     expect(wrapper.find('table thead th')).toHaveLength(2);
     expect(wrapper.find('table tbody tr')).toHaveLength(5);
+  });
+
+  it('sorts table should not crash on absent key', () => {
+    const fixturesMod = fixtures.map(i => ({ name: i.name }));
+    const columnMod = ColumnsFixtures.map(i => ({ ...i, sortable: true }));
+    const wrapper = mount(<Table data={fixturesMod} columns={columnMod} />);
+    const onSortSpy = jest.spyOn(wrapper.instance(), 'sortPage');
+    // Ascending order
+    wrapper
+      .find('table thead th')
+      .at(1)
+      .simulate('click', { target: { name: 0 } });
+    expect(onSortSpy).toHaveBeenCalled();
+    wrapper.update();
+    expect(wrapper.state('sortAscending')).toBeTruthy();
   });
 
   it('sorts table', () => {
@@ -177,6 +199,138 @@ fdescribe('Table Component', () => {
     wrapper.find('.input-group.search input').simulate('change', { target: { value: '' } });
     wrapper.update();
     expect(wrapper.find('table tbody tr')).toHaveLength(10);
+  });
+
+  it('should not search column', () => {
+    const fixturesMod = fixtures.map(i => ({ name: i.name, availablity: 'still-in-stock' }));
+    const columnMod = [
+      ...ColumnsFixtures,
+      { name: 'Availablity', selector: 'availablity', unsearchable: true },
+    ];
+    const wrapper = mount(<Table data={fixturesMod} columns={columnMod} search />);
+    wrapper.find('.input-group.search input').simulate('change', {
+      target: { value: 'still-in-stock' },
+    });
+    expect(wrapper.find('table td').text()).toEqual('No data found');
+  });
+
+  it('should display/change correct page option', () => {
+    const wrapper = mount(
+      <Table data={fixtures} columns={ColumnsFixtures} pageOptions={[25, 40, 50]} />,
+    );
+    expect(wrapper.find('.pagination .page-option').props().value).toEqual(25);
+    wrapper
+      .find('.pagination .page-option')
+      .find('option')
+      .at(1)
+      .simulate('change', 1);
+    expect(wrapper.find('.pagination .page-option').props().value).toEqual('40');
+    wrapper
+      .find('.pagination .page-option')
+      .find('option')
+      .at(2)
+      .simulate('change', 1);
+    expect(wrapper.find('.pagination .page-option').props().value).toEqual('50');
+  });
+
+  it('should change the table limit', () => {
+    const wrapper = mount(
+      <Table data={fixtures} columns={ColumnsFixtures} pageOptions={[5, 10, 20]} />,
+    );
+    expect(wrapper.find('table tbody tr')).toHaveLength(5);
+    wrapper
+      .find('.pagination .page-option')
+      .find('option')
+      .at(1)
+      .simulate('change', 1);
+
+    expect(wrapper.find('table tbody tr')).toHaveLength(10);
+    wrapper
+      .find('.pagination .page-option')
+      .find('option')
+      .at(2)
+      .simulate('change', 1);
+
+    expect(wrapper.find('table tbody tr')).toHaveLength(20);
+  });
+
+  it('should display/change correct page option', () => {
+    const wrapper = mount(
+      <Table data={fixtures} columns={ColumnsFixtures} pageOptions={[25, 40, 50]} />,
+    );
+    expect(wrapper.find('.pagination .page-option').props().value).toEqual(25);
+    wrapper
+      .find('.pagination .page-option')
+      .find('option')
+      .at(1)
+      .simulate('change', 1);
+    expect(wrapper.find('.pagination .page-option').props().value).toEqual('40');
+    wrapper
+      .find('.pagination .page-option')
+      .find('option')
+      .at(2)
+      .simulate('change', 1);
+    expect(wrapper.find('.pagination .page-option').props().value).toEqual('50');
+  });
+
+  it('should change the table items on prev click', () => {
+    const wrapper = mount(
+      <Table data={fixtures} columns={ColumnsFixtures} pageOptions={[15, 20]} />,
+    );
+
+    wrapper.find('.pagination .next span').simulate('click');
+    expect(wrapper.find('table tbody tr')).toHaveLength(5);
+
+    wrapper.find('.pagination .prev span').simulate('click');
+    expect(wrapper.find('table tbody tr')).toHaveLength(15);
+  });
+
+  it('should change the table items on next click', () => {
+    const wrapper = mount(
+      <Table data={fixtures} columns={ColumnsFixtures} pageOptions={[15, 20]} />,
+    );
+
+    expect(wrapper.find('table tbody tr')).toHaveLength(15);
+
+    wrapper.find('.pagination .next span').simulate('click');
+    expect(wrapper.find('table tbody tr')).toHaveLength(5);
+  });
+
+  it('should change page by input field', () => {
+    const wrapper = mount(
+      <Table data={fixtures} columns={ColumnsFixtures} pageOptions={[15, 20]} />,
+    );
+    expect(wrapper.find('table tbody tr')).toHaveLength(15);
+
+    wrapper.find('.pagination input.current-page').simulate('change', { target: { value: 2 } });
+    wrapper.update();
+    expect(wrapper.find('table tbody tr')).toHaveLength(5);
+  });
+
+  it('should render custom pagination', () => {
+    const wrapper = mount(
+      <Table
+        data={fixtures}
+        columns={ColumnsFixtures}
+        pageOptions={[15, 20]}
+        customPagination
+        paginationComponent={({ itemsLength, currentPage, perPage, pageChange }) => (
+          <Pagination
+            itemClass="page-item"
+            linkClass="page-link"
+            innerClass="pagination custom-paging justify-content-end"
+            activePage={currentPage}
+            itemsCountPerPage={perPage}
+            totalItemsCount={itemsLength}
+            pageRangeDisplayed={5}
+            onChange={page => pageChange(page, perPage)}
+          />
+        )}
+      />,
+    );
+    expect(wrapper.find('table tbody tr')).toHaveLength(15);
+
+    expect(wrapper.find('.pagination.custom-paging')).toHaveLength(1);
   });
 
   it('load from server', () => {

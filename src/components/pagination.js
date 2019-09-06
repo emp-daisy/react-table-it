@@ -72,9 +72,8 @@ class Pagination extends React.Component {
     onPageChange(0, num, searchText);
   };
 
-  onPageChange = e => {
+  onPageChange = value => {
     const { totalPages } = this.state;
-    const { value } = e.target;
     if (Number.isNaN(value) || value > totalPages || value < 1) {
       return;
     }
@@ -90,11 +89,19 @@ class Pagination extends React.Component {
   };
 
   render() {
-    const { showSearch, pageOptions, searchPlaceholder, data, paginationComponent } = this.props;
+    const {
+      showSearch,
+      pageOptions,
+      searchPlaceholder,
+      data,
+      paginationComponent,
+      customPagination,
+      itemsLength,
+    } = this.props;
     const { totalPages, currentPage, perPage } = this.state;
     return (
       <React.Fragment>
-        {!paginationComponent ? (
+        {!customPagination ? (
           <div className="pagination row m-0 mb-2">
             <div className="col-5">
               {showSearch && (
@@ -128,7 +135,7 @@ class Pagination extends React.Component {
                   className="custom-select mr-sm-2 page-option"
                   aria-label="select options"
                   labelledby="select options"
-                  defaultValue={perPage}
+                  value={perPage}
                   // role="listbox"
                   aria-expanded="true"
                   onChange={e => this.changeLimit(e.target.value)}
@@ -154,10 +161,10 @@ class Pagination extends React.Component {
                     <div className="form-inline">
                       <label htmlFor="currentPage" className="mx-2">
                         <input
-                          onChange={this.onPageChange}
+                          onChange={e => this.onPageChange(e.target.value)}
                           type="number"
                           autoComplete="off"
-                          className="form-control"
+                          className="form-control current-page"
                           value={currentPage}
                           required
                           aria-label="current page"
@@ -181,16 +188,18 @@ class Pagination extends React.Component {
             )}
           </div>
         ) : (
-          <paginationComponent
-            totalPages={totalPages}
-            currentPage={currentPage}
-            perPage={perPage}
-            next={this.next}
-            previous={this.previous}
-            pageChange={this.onPageChange}
-            limitChange={this.changeLimit}
-            searchPage={this.handleSearch}
-          />
+          <React.Fragment>
+            {paginationComponent({
+              itemsLength,
+              currentPage,
+              perPage,
+              next: this.next,
+              previous: this.previous,
+              pageChange: this.onPageChange,
+              limitChange: this.changeLimit,
+              searchPage: this.handleSearch,
+            })}
+          </React.Fragment>
         )}
       </React.Fragment>
     );
@@ -215,8 +224,10 @@ Pagination.propTypes = {
   searchPlaceholder: PropTypes.string,
   /** Set visibility of search box  */
   showSearch: PropTypes.bool,
+  /** Render custom pagination  */
+  customPagination: PropTypes.bool,
   /** Custom pagination component. */
-  paginationComponent: PropTypes.element,
+  paginationComponent: PropTypes.func,
 };
 
 Pagination.defaultProps = {
@@ -226,6 +237,7 @@ Pagination.defaultProps = {
   pageOptions: [10, 25, 50],
   searchPlaceholder: 'Search...',
   showSearch: true,
+  customPagination: false,
   paginationComponent: null,
 };
 

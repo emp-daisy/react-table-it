@@ -6,6 +6,6 @@ import { ColumnsFixtures, TableFixtures } from '../fixtures/data';
 storiesOf('Sorting', module).add('Sort column', () => (
   <Table
     columns={ColumnsFixtures.map(data => ({ ...data, sortable: true }))}
-    data={TableFixtures}
+    data={TableFixtures(20)}
   />
 ));
