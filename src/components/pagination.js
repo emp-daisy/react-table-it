@@ -164,7 +164,7 @@ class Pagination extends React.Component {
                           onChange={e => this.onPageChange(e.target.value)}
                           type="number"
                           autoComplete="off"
-                          className="form-control current-page"
+                          className="form-control current-page mr-2"
                           value={currentPage}
                           required
                           aria-label="current page"

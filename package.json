@@ -12,7 +12,7 @@
     "lint": "eslint --fix . && echo 'Lint complete.'",
     "prepublishOnly": "rm -rf ./dist && npm run build",
     "storybook": "start-storybook -p 6006 -s public",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook -s public"
   },
   "keywords": [
     "react",
@@ -30,6 +30,10 @@
   },
   "homepage": "https://emp-daisy.github.io/data-table-react/",
   "license": "ISC",
+  "engines": {
+    "node": ">= 10.16.0",
+    "npm": ">= 6.9.0"
+  },
   "peerDependencies": {
     "react": "^16.x",
     "react-dom": "^16.6.3"
@@ -63,7 +67,7 @@
     "bootstrap": "^4.3.1",
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.14.0",
-    "eslint": "^6.1.0",
+    "eslint": "^6.3.0",
     "eslint-config-airbnb": "^17.1.1",
     "eslint-config-prettier": "^6.0.0",
     "eslint-plugin-import": "^2.18.2",
