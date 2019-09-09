@@ -66,7 +66,7 @@ jobs:
           command: yarn build-storybook
       - run:
           name: Install dependencies
-          command: sudo yarn install -g --silent gh-pages@2.0.1
+          command: sudo yarn add --silent gh-pages@2.0.1
       - run:
           name: Configure dependencies
           command: git config --global user.name "${GH_NAME}" && git config --global user.email "${GH_EMAIL}"
