@@ -1,5 +1,5 @@
 import { create } from '@storybook/theming';
-import logo from './img/compress-logo.svg';
+import logo from '../../public/compress-logo.svg';
 
 export default create({
   base: 'dark',
