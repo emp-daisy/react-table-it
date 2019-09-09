@@ -4,11 +4,11 @@ import Table from '../src';
 import { ColumnsFixtures, TableFixtures } from '../fixtures/data';
 
 storiesOf('Table', module)
-  .add('Basic', () => <Table columns={ColumnsFixtures} data={TableFixtures} />)
+  .add('Basic', () => <Table columns={ColumnsFixtures} data={TableFixtures(20)} />)
   .add('Custom', () => (
     <Table
       columns={ColumnsFixtures}
-      data={TableFixtures}
+      data={TableFixtures(20)}
       containerClass="mt-4"
       tableClass="table table-dark table-bordered table-hover table-sm"
     />
@@ -16,7 +16,7 @@ storiesOf('Table', module)
   .add('Custom header and footer', () => (
     <Table
       columns={ColumnsFixtures}
-      data={TableFixtures}
+      data={TableFixtures(20)}
       header={(
         <div>
           <h4 className=" m-3 text-underline">

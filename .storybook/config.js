@@ -1,9 +1,27 @@
 import { configure, addParameters, addDecorator } from '@storybook/react';
-import { purple_theme } from './theme';
+import { light_theme, dark_theme } from './theme';
 import { withInfo } from '@storybook/addon-info';
 import { withKnobs } from '@storybook/addon-knobs/react';
 import { withSmartKnobs } from 'storybook-addon-smart-knobs';
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport';
+import { withContexts } from '@storybook/addon-contexts/react';
+
+const contexts = [
+  {
+    icon: 'chroma',
+    title: 'Theme',
+    components: [],
+    params: [
+      { name: 'Light', props: { light_theme } },
+      { name: 'Dark', props: { dark_theme }, default: true },
+    ],
+    options: {
+      deep: true,
+      disable: false,
+      cancelable: false,
+    },
+  },
+];
 
 // automatically import all files ending in *.stories.js
 const req = require.context('../stories', true, /\.stories\.js$/);
@@ -22,7 +40,7 @@ addDecorator(
           display: 'block',
           position: 'fixed',
           border: 'none',
-          background: '#14558f',
+          background: '#000',
           color: '#fff',
           padding: '5px 15px',
           cursor: 'pointer',
@@ -41,7 +59,15 @@ addDecorator(
 addDecorator(withKnobs);
 addDecorator(withSmartKnobs);
 
-addParameters({ options: { theme: purple_theme, panelPosition: 'right' } });
+// addParameters({
+//   options: {
+//     // theme,
+//     // panelPosition: 'right',
+//     // showPanel: false
+//   }
+// });
+
+addDecorator(withContexts(contexts));
 
 addParameters({ viewport: { viewports: INITIAL_VIEWPORTS } });
 

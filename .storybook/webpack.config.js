@@ -6,8 +6,7 @@ module.exports = async ({ config }) => {
     use: ['style-loader', 'css-loader', 'sass-loader'],
     include: path.resolve(__dirname, '../'),
   });
-  // config.resolve.modules.push(path.resolve(__dirname, "../fixtures"));
-  config.resolve.modules.push(path.resolve(__dirname, "../fixtures"));
-	config.resolve.extensions.push('.ts', '.tsx');
+  config.resolve.modules.push(path.resolve(__dirname, '../fixtures'));
+  config.resolve.extensions.push('.ts', '.tsx');
   return config;
 };

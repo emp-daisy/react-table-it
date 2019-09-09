@@ -5,13 +5,11 @@ const ColumnsFixtures = [
   { name: 'Description', selector: 'description' },
 ];
 
-const createTableFixture = (size = 1) =>
+const TableFixtures = (size = 1) =>
   new Array(size).fill({}).map(() => ({
     name: faker.commerce.productName(),
     description: faker.lorem.sentences(),
   }));
-
-const TableFixtures = createTableFixture(20);
 
 export { ColumnsFixtures, TableFixtures };
 export default TableFixtures;

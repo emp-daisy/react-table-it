@@ -34,7 +34,9 @@ jobs:
       # Run tests
       - run:
           name: Test
-          command: npm run test
+          command: npm run test:coverage
+      - store_artifacts:
+          path: coverage
       # Deploy documentation to git-pages
       - persist_to_workspace:
           root: ~/rdt

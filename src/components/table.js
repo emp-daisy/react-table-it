@@ -38,7 +38,7 @@ class Table extends React.Component {
   };
 
   onPageChange = (offset, limit, search) => {
-    const { server, onPageChange } = this.props;
+    const { server, onPageChange, columns } = this.props;
     const { stateData: data } = this.state;
     let filteredData;
     let searchData;
@@ -46,12 +46,20 @@ class Table extends React.Component {
       onPageChange(offset, limit, search);
       filteredData = data.slice(0, limit);
     } else {
-      searchData = [...data].filter(item =>
-        Object.values(item)
-          .join()
-          .toLowerCase()
-          .includes(search),
+      const searchable = columns.reduce(
+        (result, item) => [...result, ...(!item.unsearchable ? [item.selector] : [])],
+        [],
       );
+      searchData =
+        search.trim().length === 0
+          ? data
+          : [...data].filter(
+              item =>
+                searchable
+                  .reduce((result, key) => [...result, item[key]], [])
+                  .map(mitem => [mitem || ''].toString().toLowerCase())
+                  .filter(fitem => fitem.includes(search)).length,
+            );
       filteredData = searchData.slice(offset).slice(0, limit);
     }
     this.setState({ filteredData, ...(search && { itemsLength: searchData.length }) });
@@ -65,11 +73,13 @@ class Table extends React.Component {
     if (onSort) {
       onSort(key, sortAscending);
     } else {
-      stateData = [...data].sort((a, b) =>
-        sortAscending
-          ? a[key].toString().localeCompare(b[key].toString())
-          : b[key].toString().localeCompare(a[key].toString()),
-      );
+      stateData = [...data].sort((a, b) => {
+        const first = a[key] || '';
+        const second = b[key] || '';
+        return sortAscending
+          ? first.toString().localeCompare(second.toString())
+          : second.toString().localeCompare(first.toString());
+      });
     }
     this.setState({ stateData, sortKey: key, sortAscending });
   };
@@ -86,7 +96,13 @@ class Table extends React.Component {
   };
 
   pagination = () => {
-    const { searchPlaceholder, search, pageOptions, paginationComponent } = this.props;
+    const {
+      searchPlaceholder,
+      search,
+      pageOptions,
+      paginationComponent,
+      customPagination,
+    } = this.props;
     const { itemsLength, stateData } = this.state;
     return (
       <PaginationBar
@@ -97,6 +113,7 @@ class Table extends React.Component {
         data={stateData}
         pageOptions={pageOptions}
         paginationComponent={paginationComponent}
+        customPagination={customPagination}
       />
     );
   };
@@ -114,60 +131,58 @@ class Table extends React.Component {
     } = this.props;
     const { filteredData } = this.state;
     return (
-      <div className={`table-wrapper ${containerClass}`}>
+      <div className={`mx-3 table-wrapper ${containerClass}`}>
         {header}
         {(paginationPosition === 'top' || paginationPosition === 'both') && this.pagination()}
-        <div className="mx-3">
-          <table className={`table ${tableClass}`}>
-            <thead>
-              <tr>
-                {columns &&
-                  columns.map((item, index) => (
-                    <th
-                      key={`header-${index}`}
-                      className={item.class}
-                      onClick={item.sortable ? () => this.sortPage(item.selector) : undefined}
-                    >
-                      {item.name}
-                      {item.sortable && (
-                        <FontAwesomeIcon
-                          className="mx-1 align-middle float-right"
-                          icon={this.sortIcon(item.selector)}
-                          size="1x"
-                        />
-                      )}
-                    </th>
-                  ))}
-              </tr>
-            </thead>
-            <tbody>
-              {filteredData &&
-                filteredData.map((data, index) => (
-                  <tr key={`data-${index}`} className={rowClass}>
-                    {columns &&
-                      columns.map((item, tdIndex) =>
-                        item.cell ? (
-                          <td key={`cell-data-${tdIndex}`} className={item.class}>
-                            {typeof item.cell === 'function' ? item.cell(data) : item.cell}
-                          </td>
-                        ) : (
-                          <td key={`cell-data-${tdIndex}`} className={item.class}>
-                            {data[item.selector]}
-                          </td>
-                        ),
-                      )}
-                  </tr>
+        <table className={`table ${tableClass}`}>
+          <thead>
+            <tr>
+              {columns &&
+                columns.map((item, index) => (
+                  <th
+                    key={`header-${index}`}
+                    className={item.class}
+                    onClick={item.sortable ? () => this.sortPage(item.selector) : undefined}
+                  >
+                    {item.name}
+                    {item.sortable && (
+                      <FontAwesomeIcon
+                        className="mx-1 align-middle float-right"
+                        icon={this.sortIcon(item.selector)}
+                        size="1x"
+                      />
+                    )}
+                  </th>
                 ))}
-              {filteredData.length === 0 && (
-                <tr>
-                  <td colSpan={columns.length} className="text-center">
-                    {emptyPlaceholder}
-                  </td>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredData &&
+              filteredData.map((data, index) => (
+                <tr key={`data-${index}`} className={rowClass}>
+                  {columns &&
+                    columns.map((item, tdIndex) =>
+                      item.cell ? (
+                        <td key={`cell-data-${tdIndex}`} className={item.class}>
+                          {typeof item.cell === 'function' ? item.cell(data) : item.cell}
+                        </td>
+                      ) : (
+                        <td key={`cell-data-${tdIndex}`} className={item.class}>
+                          {data[item.selector]}
+                        </td>
+                      ),
+                    )}
                 </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+              ))}
+            {filteredData.length === 0 && (
+              <tr>
+                <td colSpan={columns.length} className="text-center">
+                  {emptyPlaceholder}
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
         {(paginationPosition === 'bottom' || paginationPosition === 'both') && this.pagination()}
         {footer}
       </div>
@@ -187,6 +202,7 @@ Table.propTypes = {
       class: PropTypes.string,
       selector: PropTypes.string,
       sortable: PropTypes.bool,
+      unsearchable: PropTypes.bool,
       cell: PropTypes.oneOfType([PropTypes.func, PropTypes.element]),
     }),
   ),
@@ -200,7 +216,21 @@ Table.propTypes = {
   pageOptions: PropTypes.arrayOf(PropTypes.number),
   /** Set if pagination is handled by asynchronously */
   server: PropTypes.bool,
-  paginationComponent: PropTypes.element,
+  /** Custom pagination component.
+   * PROPS: ***    itemsLength => size of data
+   *        ***    currentPage => current page
+   *        ***    perPage => page limit
+   *        ***    next => next page function
+   *        ***    previous => previous page function
+   *        ***    pageChange => change page function
+   *        ***    limitChange => change page limit function
+   *        ***    searchPage => search page
+   */
+  paginationComponent: PropTypes.func,
+  /**
+   * Render custome pagination
+   */
+  customPagination: PropTypes.bool,
   /** Custom page change function.
    * Note: server props must true
    * params => (offset, limit, search)
@@ -241,7 +271,8 @@ Table.defaultProps = {
   // PAGINATION
   pageOptions: [10, 30, 50],
   server: false,
-  paginationComponent: null,
+  customPagination: false,
+  paginationComponent: undefined,
   paginationPosition: 'top',
   onPageChange: () => {},
   // SORTING

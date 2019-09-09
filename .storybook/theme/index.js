@@ -1,5 +1,4 @@
-import purple_theme from './purple';
+import light_theme from './light';
+import dark_theme from './dark';
 
-export {
-    purple_theme
-};
+export { light_theme, dark_theme };

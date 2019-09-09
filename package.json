@@ -8,10 +8,10 @@
     "build": "babel ./src --out-dir ./build -s inline",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage --colors",
+    "test:coverage": "jest --collectCoverage=true",
     "lint": "eslint --fix . && echo 'Lint complete.'",
     "prepublishOnly": "rm -rf ./dist && npm run build",
-    "storybook": "start-storybook -p 6006",
+    "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook"
   },
   "keywords": [
@@ -49,6 +49,7 @@
     "@fortawesome/react-fontawesome": "^0.1.4",
     "@storybook/addon-a11y": "^5.1.10",
     "@storybook/addon-actions": "^5.1.10",
+    "@storybook/addon-contexts": "^5.1.11",
     "@storybook/addon-info": "^5.1.11",
     "@storybook/addon-knobs": "^5.1.11",
     "@storybook/addon-links": "^5.1.10",
@@ -78,6 +79,8 @@
     "prop-types": "^15.7.2",
     "react": "^16.x",
     "react-dom": "^16.6.3",
+    "react-js-pagination": "^3.0.2",
+    "react-paginate": "^6.3.0",
     "sass-loader": "^7.2.0",
     "storybook-addon-smart-knobs": "^5.0.0",
     "webpack-cli": "^3.3.6"

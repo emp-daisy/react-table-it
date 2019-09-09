@@ -2,4 +2,4 @@
 
 Data table component with React
 
-## [Demo](https://emp-daisy.github.io/data-table-react/)
+## [Demo](https://emp-daisy.github.io/react-table-it)
