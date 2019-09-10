@@ -214,9 +214,8 @@ Table.propTypes = {
   paginationPosition: PropTypes.oneOf(['top', 'bottom', 'both', 'none']),
   /** Page limit options. */
   pageOptions: PropTypes.arrayOf(PropTypes.number),
-  /** Set if pagination is handled by asynchronously */
-  server: PropTypes.bool,
   /** Custom pagination component.
+   * paginationComponent must be set
    * PROPS: ***    itemsLength => size of data
    *        ***    currentPage => current page
    *        ***    perPage => page limit
@@ -228,9 +227,11 @@ Table.propTypes = {
    */
   paginationComponent: PropTypes.func,
   /**
-   * Render custome pagination
+   * Render custom pagination
    */
   customPagination: PropTypes.bool,
+  /** Set if pagination is handled by asynchronously */
+  server: PropTypes.bool,
   /** Custom page change function.
    * Note: server props must true
    * params => (offset, limit, search)

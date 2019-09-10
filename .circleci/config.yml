@@ -1,7 +1,7 @@
 defaults: &defaults
   working_directory: ~/rdt
   docker:
-    - image: circleci/node:11.4.0
+    - image: circleci/node:latest
 jobs:
   test-build:
     <<: *defaults
@@ -20,7 +20,7 @@ jobs:
       # Install project dependencies
       - run:
           name: Install Dependencies
-          command: yarn install --ignore-engines
+          command: sudo npm install -g yarn && yarn install
       # Cache local dependencies if they don't exist
       - save_cache:
           name: Save YARN Package Cache
@@ -65,16 +65,13 @@ jobs:
           name: Buid docs
           command: yarn build-storybook
       - run:
-          name: Install dependencies
-          command: sudo yarn add --silent gh-pages@2.0.1 --ignore-engines
-      - run:
           name: Configure dependencies
           command: git config --global user.name "${GH_NAME}" && git config --global user.email "${GH_EMAIL}"
       - run:
           name: Deploy docs to gh-pages branch
-          command: gh-pages -m 'auto commit [ci skip]' --dist storybook-static
+          command: yarn run deploy-docs --message "[skip ci] generate docs"
       - run:
-          name: Deploy docs success
+          name: Deployed docs success
           command: echo "Successfully deployed docs"
           when: on_success
 workflows:
