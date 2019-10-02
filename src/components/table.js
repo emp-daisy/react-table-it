@@ -57,7 +57,13 @@ class Table extends React.Component {
               item =>
                 searchable
                   .reduce((result, key) => [...result, item[key]], [])
-                  .map(mitem => [mitem || ''].toString().toLowerCase())
+                  .map(mitem => {
+                    let itemValue = mitem;
+                    if (typeof mitem === 'object') {
+                      itemValue = Object.values(mitem);
+                    }
+                    return [itemValue || ''].toString().toLowerCase();
+                  })
                   .filter(fitem => fitem.includes(search)).length,
             );
       filteredData = searchData.slice(offset).slice(0, limit);
