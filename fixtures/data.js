@@ -1,7 +1,7 @@
 import faker from 'faker';
 
 const ColumnsFixtures = [
-  { name: 'Name', selector: 'name', class: 'w-50', sortable: true },
+  { name: 'Name', selector: 'name', className: 'w-50', sortable: true },
   { name: 'Description', selector: 'description' },
 ];
 

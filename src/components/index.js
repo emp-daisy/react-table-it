@@ -1,3 +1,4 @@
 import Table from './table';
+import Pagination from './pagination';
 
-export default Table;
+export { Table, Pagination };

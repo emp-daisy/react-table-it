@@ -4,7 +4,7 @@ import Table from './table';
 import { TableFixtures, ColumnsFixtures } from '../../fixtures/data';
 
 const fixtures = TableFixtures(20);
-describe('Table Component', () => {
+describe.only('Table Component', () => {
   it('should renders correctly', () => {
     const wrapper = shallow(<Table />);
     expect(wrapper).toMatchSnapshot();
@@ -334,11 +334,12 @@ describe('Table Component', () => {
   });
 
   it('load from server', () => {
+    const fixturess = TableFixtures(35);
     const wrapper = mount(
-      <Table server dataLength={50} data={fixtures.slice(0, 12)} columns={ColumnsFixtures} />,
+      <Table server dataLength={35} data={fixturess.slice(0, 35)} columns={ColumnsFixtures} />,
     );
     wrapper.update();
-    expect(wrapper.state('itemsLength')).toEqual(50);
+    expect(wrapper.state('itemsLength')).toEqual(35);
     expect(wrapper.find('table tbody tr')).toHaveLength(10);
   });
 });

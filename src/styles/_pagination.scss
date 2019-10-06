@@ -1,67 +1,73 @@
 .pagination {
-	font-size: 14px;
-	vertical-align: middle;
-	width: 100%;
+  font-size: 14px;
+  vertical-align: middle;
+  width: 100%;
 
-	input {
+  input {
+    &:focus {
+      box-shadow: none;
+      border-color: unset;
+    }
+  }
 
-		&:focus{
-			box-shadow: none;
-			border-color: unset;
-		}
-	}
+  .search {
+    border: none;
+  }
 
-	.search {
-		border: none;
-	}
+  .page-option {
+    width: auto;
+    background: none;
+  }
 
-	.page-option {
-		width: auto;
-	}
+  .navigation {
+    .pages {
+      display: inline-block;
 
-	.navigation {
-		width: auto;
+      span {
+        padding: 3px;
+        margin: -3px 0px;
+        border-radius: 50px;
+        height: auto;
+        width: 30px;
+        display: inline-block;
+        text-align: center;
+        cursor: pointer;
 
-		.pages {
-			display: inline-block;
+        // &.active {
+        // 	@include themify($themes) {
+        // 		color: themed("headerColor");
+        // 		background-color: themed("buttonSecondaryColor") !important;
+        // 	}
+        // }
+        // &:hover {
+        // 	@include themify($themes) {
+        // 		color: themed("headerColor");
+        // 	}
+        // }
+      }
 
-			span {
-				padding: 3px;
-				margin: -3px 0px;
-				border-radius: 50px;
-				height: auto;
-				width: 27px;
-				display: inline-block;
-				text-align: center;
-				cursor: pointer;
+      .current-page {
+        margin: 0 !important;
+        text-align: center;
+      }
+      input {
+        margin: 0 !important;
+        text-align: center;
+      }
+    }
 
-				// &.active {
-				// 	@include themify($themes) {
-				// 		color: themed("headerColor");
-				// 		background-color: themed("buttonSecondaryColor") !important;
-				// 	}
-				// }
-				// &:hover {
-				// 	@include themify($themes) {
-				// 		color: themed("headerColor");
-				// 	}
-				// }
-			}
-		}
+    .control {
+      cursor: pointer;
 
-		.control {
-			cursor: pointer;
+      &.prev {
+        float: left;
+        margin-right: 10px;
+      }
 
-			&.prev {
-				float: left;
-				margin-right: 10px;
-			}
-
-			&.next {
-				float: right;
-				margin-left: 10px;
-			}
-		}
-
-	}
+      &.next {
+        float: right;
+        margin-left: 10px;
+      }
+    }
+  }
 }

@@ -10,41 +10,53 @@ Data table component with React
 
 ## [Demo](https://emp-daisy.github.io/react-table-it)
 
-### Definition
+### Installation
 
-| Props  | Required | Description | Type | Default |
-| ------- | :----: | ----------------- | :-------------:|:---------:|
-| `data` | - | Data to load on table | `[]` | `[]` |
-| `columns` | - | Table column settings | `array` of objects <br> Object contains some/ all properties below <br>`name: string or element (required)` <br> `class: string` <br> `selector: string` <br> `sortable: boolean` <br> `unsearchable: boolean` <br> `cell: element or function` function passes current row data and returns element<br> | `[]` |
-| `emptyPlaceholder` | - | Data to load on table | `[]` | `[]` |
-| `dataLength` | - | Specify length of all data when loading from server. `Note: server props must true` | `[]` | `[]` |
-| `emptyPlaceholder` | - | Placeholder when table is empty. | `string | element` | 'No data found' |
-| `pageOptions` | - | Data to load on table | `array` of numbers | `[10, 30, 50]` |
-| `server` | - | Set if pagination is handled by asynchronously | `boolean` | `false` |
-| `customPagination` | - | Render custom pagination | `boolean` | `false` |
-| `paginationComponent` | - | Custom pagination component | `function` | `undefined` |
-| `paginationPosition` | - | Position of pagination component | One of `['top', 'bottom', 'both', 'none']` | 'top' |
-| `onPageChange` | - | Custom page change function | `function` with params `(offset, limit, searchValue)` <br> `Note: server props must true` | - |
-| `onSort` | - | Custom sort function | `function` with params `(selector/key, ascending(boolean))` | `undefined` |
-| `searchPlaceholder` | - | Search box placeholder | `string` | 'Search' |
-| `search` | - | Set visibility of search box | `boolean` | `true` |
-| `containerClass` | - | CSS class for package component | `string` | '' |
-| `tableClass` | - | CSS class for table | `string` | '' |
-| `rowClass` | - | CSS class for table row | `string` | '' |
-| `header` | - | Custom header component | `element` | `null` |
-| `footer` | - | Custom footer component | `element` | `null` |
+`$ npm i @emp/reactable`
+
+or
+
+`$ yarn add @emp/reactable`
+
+### Usage
+
+```js
+import Table from '@empd/reactable';
+import '@empd/reactable/lib/styles.css';
+```
+
+### Props
+
+| Props                 | Required | Description                                                                         |                                                                                                                                                                           Type                                                                                                                                                                           |     Default     |
+| --------------------- | :------: | ----------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :-------------: |
+| `data`                |    -     | Data to load on table                                                               |                                                                                                                                                                           `[]`                                                                                                                                                                           |      `[]`       |
+| `columns`             |    -     | Table column settings                                                               | `array` of objects <br> Object contains some/ all properties below <br>`name: string or element (required)` <br> `className: string` <br> `attributes: Object of html attributes` <br> `selector: string` <br> `sortable: boolean` <br> `unsearchable: boolean` <br> `cell: element or function` function passes current row data and returns element<br> |      `[]`       |
+| `emptyPlaceholder`    |    -     | Data to load on table                                                               |                                                                                                                                                                           `[]`                                                                                                                                                                           |      `[]`       |
+| `dataLength`          |    -     | Specify length of all data when loading from server. `Note: server props must true` |                                                                                                                                                                           `[]`                                                                                                                                                                           |      `[]`       |
+| `emptyPlaceholder`    |    -     | Placeholder when table is empty.                                                    |                                                                                                                                                                    `string | element`                                                                                                                                                                    | 'No data found' |
+| `pageOptions`         |    -     | Data to load on table                                                               |                                                                                                                                                                    `array` of numbers                                                                                                                                                                    | `[10, 30, 50]`  |
+| `server`              |    -     | Set if pagination is handled by asynchronously                                      |                                                                                                                                                                        `boolean`                                                                                                                                                                         |     `false`     |
+| `customPagination`    |    -     | Render custom pagination                                                            |                                                                                                                                                                        `boolean`                                                                                                                                                                         |     `false`     |
+| `paginationComponent` |    -     | Custom pagination component                                                         |                                                                                                                                                                        `function`                                                                                                                                                                        |   `undefined`   |
+| `paginationPosition`  |    -     | Position of pagination component                                                    |                                                                                                                                                        One of `['top', 'bottom', 'both', 'none']`                                                                                                                                                        |      'top'      |
+| `onPageChange`        |    -     | Custom page change function                                                         |                                                                                                                                `function` with params `(offset, limit, searchValue)` <br> `Note: server props must true`                                                                                                                                 |        -        |
+| `onSort`              |    -     | Custom sort function                                                                |                                                                                                                                               `function` with params `(selector/key, ascending(boolean))`                                                                                                                                                |   `undefined`   |
+| `searchPlaceholder`   |    -     | Search box placeholder                                                              |                                                                                                                                                                         `string`                                                                                                                                                                         |    'Search'     |
+| `search`              |    -     | Set visibility of search box                                                        |                                                                                                                                                                        `boolean`                                                                                                                                                                         |     `true`      |
+| `containerClass`      |    -     | CSS class for package component                                                     |                                                                                                                                                                         `string`                                                                                                                                                                         |       ''        |
+| `tableClass`          |    -     | CSS class for table                                                                 |                                                                                                                                                                         `string`                                                                                                                                                                         |       ''        |
+| `headerClass`         |    -     | CSS class for table header                                                          |                                                                                                                                                                         `string`                                                                                                                                                                         |       ''        |
+| `rowClass`            |    -     | CSS class for table row                                                             |                                                                                                                                                                         `string`                                                                                                                                                                         |       ''        |
+| `header`              |    -     | Custom header component                                                             |                                                                                                                                                                        `element`                                                                                                                                                                         |     `null`      |
+| `footer`              |    -     | Custom footer component                                                             |                                                                                                                                                                        `element`                                                                                                                                                                         |     `null`      |
 
 ### Technology
 
 Table It uses a number of open source projects to work properly:
 
-* [ReactJS] - HTML enhanced for web apps!
-* [Bootstrap] - great UI boilerplate for modern web apps
-* [Storybook] - great UI docs
-
-### Installation
-
-Link to package **coming soon**
+- [ReactJS] - HTML enhanced for web apps!
+- [Bootstrap] - great UI boilerplate for modern web apps
+- [Storybook] - great UI docs
 
 ### Development
 

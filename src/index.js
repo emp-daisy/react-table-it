@@ -1,4 +1,4 @@
-import './styles/index.scss'
-import Main from './components'
+// import './styles/index.scss';
+import { Table } from './components';
 
-export default Main
+export default Table;

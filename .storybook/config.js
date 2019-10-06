@@ -1,9 +1,8 @@
 import { configure, addParameters, addDecorator } from '@storybook/react';
 import { dark_theme } from './theme';
 import { withInfo } from '@storybook/addon-info';
-import { withKnobs } from '@storybook/addon-knobs/react';
-import { withSmartKnobs } from 'storybook-addon-smart-knobs';
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport';
+import '../src/styles/index.scss';
 
 // automatically import all files ending in *.stories.js
 const req = require.context('../stories', true, /\.stories\.js$/);
@@ -37,9 +36,6 @@ addDecorator(
     },
   }),
 );
-
-addDecorator(withKnobs);
-addDecorator(withSmartKnobs);
 
 addParameters({
   options: {

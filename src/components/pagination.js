@@ -103,7 +103,7 @@ class Pagination extends React.Component {
       <React.Fragment>
         {!customPagination ? (
           <div className="pagination row m-0 mb-2">
-            <div className="col-5">
+            <div className="col-5 px-0">
               {showSearch && (
                 <div className="input-group search">
                   <input
@@ -130,7 +130,7 @@ class Pagination extends React.Component {
               )}
             </div>
             {totalPages > 0 && (
-              <div className="col-7 d-flex justify-content-end">
+              <div className="col-7 px-0 d-flex justify-content-end">
                 <select
                   className="custom-select mr-sm-2 page-option"
                   aria-label="select options"
@@ -150,7 +150,10 @@ class Pagination extends React.Component {
                     </option>
                   ))}
                 </select>
-                <div className="navigation d-flex justify-content-around align-items-center">
+                <div
+                  className="navigation d-flex justify-content-around align-items-center"
+                  style={{ width: 'auto' }}
+                >
                   <div className={`control prev${currentPage === 1 ? ' disabled' : ''}`}>
                     <span onClick={this.previous} role="presentation">
                       <FontAwesomeIcon className="mx-1" icon={faChevronLeft} size="1x" />
@@ -173,7 +176,8 @@ class Pagination extends React.Component {
                           max={totalPages}
                           id="currentPage"
                         />
-                        {`of ${totalPages}`}
+                        <span>of</span>
+                        {totalPages}
                       </label>
                     </div>
                   </div>

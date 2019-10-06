@@ -44,6 +44,7 @@ class Table extends React.Component {
     let searchData;
     if (server) {
       onPageChange(offset, limit, search);
+      searchData = data;
       filteredData = data.slice(0, limit);
     } else {
       const searchable = columns.reduce(
@@ -68,7 +69,7 @@ class Table extends React.Component {
             );
       filteredData = searchData.slice(offset).slice(0, limit);
     }
-    this.setState({ filteredData, ...(search && { itemsLength: searchData.length }) });
+    this.setState({ filteredData, itemsLength: searchData.length });
   };
 
   sortPage = key => {
@@ -124,6 +125,8 @@ class Table extends React.Component {
     );
   };
 
+  tableCell = (item, data) => (typeof item.cell === 'function' ? item.cell(data) : item.cell);
+
   render() {
     const {
       columns,
@@ -147,8 +150,8 @@ class Table extends React.Component {
                 columns.map((item, index) => (
                   <th
                     key={`header-${index}`}
-                    className={item.class}
-                    onClick={item.sortable ? () => this.sortPage(item.selector) : undefined}
+                    className={item.headerClass || item.className}
+                    {...(item.sortable && { onClick: () => this.sortPage(item.selector) })}
                   >
                     {item.name}
                     {item.sortable && (
@@ -167,17 +170,11 @@ class Table extends React.Component {
               filteredData.map((data, index) => (
                 <tr key={`data-${index}`} className={rowClass}>
                   {columns &&
-                    columns.map((item, tdIndex) =>
-                      item.cell ? (
-                        <td key={`cell-data-${tdIndex}`} className={item.class}>
-                          {typeof item.cell === 'function' ? item.cell(data) : item.cell}
-                        </td>
-                      ) : (
-                        <td key={`cell-data-${tdIndex}`} className={item.class}>
-                          {data[item.selector]}
-                        </td>
-                      ),
-                    )}
+                    columns.map((item, tdIndex) => (
+                      <td key={tdIndex} className={item.className} {...item.attributes}>
+                        {item.cell ? this.tableCell(item, data) : data[item.selector]}
+                      </td>
+                    ))}
                 </tr>
               ))}
             {filteredData.length === 0 && (
@@ -205,7 +202,8 @@ Table.propTypes = {
   columns: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.oneOfType([PropTypes.string, PropTypes.element]).isRequired,
-      class: PropTypes.string,
+      className: PropTypes.string,
+      attributes: PropTypes.objectOf(PropTypes.any),
       selector: PropTypes.string,
       sortable: PropTypes.bool,
       unsearchable: PropTypes.bool,
@@ -261,6 +259,8 @@ Table.propTypes = {
   containerClass: PropTypes.string,
   /** CSS class for table. */
   tableClass: PropTypes.string,
+  /** CSS class for table header. */
+  headerClass: PropTypes.string,
   /** CSS class for table row. */
   rowClass: PropTypes.string,
   /** Custom header component. */
@@ -290,6 +290,7 @@ Table.defaultProps = {
   // STYLING
   containerClass: '',
   tableClass: '',
+  headerClass: '',
   rowClass: '',
   // MISC
   header: null,
