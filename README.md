@@ -69,13 +69,11 @@ Open your favorite Terminal and run these commands.
 
 Install dependenies: `$ yarn`
 
-Start application:`$ yarn start`
+Start application (opens storybook which uses the table component):`$ yarn start`
 
 Ensure the tests are stable with good coverage: `$ yarn test`
 
 Ensure the test have good coverage: `$ yarn test:coverage`
-
-(optional) Run storybook: `$ yarn storybook`
 
 ### License
 

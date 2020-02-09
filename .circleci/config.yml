@@ -20,7 +20,7 @@ jobs:
       # Install project dependencies
       - run:
           name: Install Dependencies
-          command: sudo npm install -g yarn && yarn install
+          command: yarn install
       # Cache local dependencies if they don't exist
       - save_cache:
           name: Save YARN Package Cache
@@ -47,7 +47,6 @@ jobs:
           path: reports/jest
       - store_artifacts:
           path: reports/jest
-      # Deploy documentation to git-pages
       - persist_to_workspace:
           root: ~/rdt
           paths:
@@ -76,7 +75,7 @@ jobs:
           when: on_success
 workflows:
   version: 2
-  build:
+  build_and_deploy:
     jobs:
       - test-build:
           filters:

@@ -4,7 +4,7 @@
   "description": "React data-table",
   "main": "lib/index.js",
   "scripts": {
-    "start": "webpack --watch",
+    "start": "yarn storybook",
     "build": "yarn clean:build && yarn build:js && yarn build:style",
     "build:js": "babel ./src --out-dir ./lib -s inline --ignore **/*.spec.js",
     "build:style": "node-sass src/styles/index.scss lib/styles.css --include-path ./node_modules/",
