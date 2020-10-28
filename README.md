@@ -12,11 +12,11 @@ Data table component with React
 
 ### Installation
 
-`$ npm i @emp/reactable`
+`$ npm i @empd/reactable`
 
 or
 
-`$ yarn add @emp/reactable`
+`$ yarn add @empd/reactable`
 
 ### Usage
 
